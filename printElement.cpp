@@ -10,7 +10,7 @@ void printElement(const T &number){
 int main() {
     printElement(10);
     printElement(10.25);
-    printElement("hgjdsgf");
+    printElement("Hello my name is Ruben");
     printElement('f');
 
 }
