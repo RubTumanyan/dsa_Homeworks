@@ -26,7 +26,6 @@ int main()
     std::vector<int> vec = {4 , 5 , 8, 16};
     std::vector<int> vec1 = { 8 , 16};
     int i = findSubsequence(vec , vec1);
-    i++;
     std::cout << i ;
 
     return 0;
