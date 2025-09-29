@@ -37,7 +37,7 @@ int main(){
     ListNode* head = new ListNode(1);
     head->next = new ListNode(5);
     head->next->next = new ListNode(10);
-    head->next->next = new ListNode(25);
+    head->next->next->next = new ListNode(25);
     
     std::cout << deleteValue(head, 10);
     return 0;
