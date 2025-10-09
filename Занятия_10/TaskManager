@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+#include <forward_list>
+#include <string>
+
+class TaskManager {
+private:
+    std::vector<std::forward_list<std::string>> tasks;
+public:
+    TaskManager(int levels) : tasks(levels){}
+
+    void addTask(int priority , const std::string& task) {
+        if (priority >= tasks.size()) {
+            std::cerr << "Invalid priority!!!" << std::endl;
+            return;
+        }
+        if (tasks[priority].empty()) {
+            tasks[priority].push_front(task);
+        } else {
+            auto it = tasks[priority].before_begin();
+            for (auto& t : tasks[priority]) {
+                ++it;
+            }
+            tasks[priority].insert_after(it, task); // вставляем в конец
+        }
+    }
+    std::string getNextTask() {
+        for (int i = 0 ; i < tasks.size() ;i++) {
+            if (!tasks[i].empty()) {
+                std::string task = tasks[i].front();
+                tasks[i].pop_front();
+                return task;
+            }
+        }
+        return "No task available!!!";
+    }
+
+    void removeTask(int priority , std::string task) {
+        tasks[priority].remove(task);
+    }
+
+    void printAllTasks()const {
+        for (int i = 0 ; i < tasks.size() ; i++) {
+            std::cout << "Priority" << i << std::endl;
+            for (const auto& t : tasks[i]) {
+                std::cout << t << "   " << "\n";
+            }
+        }
+    }
+};
+
+
+
+
+
+
+int main() {
+    TaskManager tm(3);
+
+    tm.addTask(0, "Fix critical bug");
+    tm.addTask(2, "Update documentation");
+    tm.addTask(0, "Deploy to production");
+    tm.addTask(1, "Review pull request");
+
+    std::string task = tm.getNextTask(); 
+    std::cout << "Next task: " << task << "\n\n";
+
+    tm.printAllTasks();
+
+    std::cout << "\nУдалим 'Review pull request'\n";
+    tm.removeTask(1, "Review pull request");
+
+    tm.printAllTasks();
+
+    return 0;
+}
