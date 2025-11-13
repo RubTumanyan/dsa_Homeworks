@@ -1,0 +1,26 @@
+#include <vector>
+#include <set>
+#include <iostream>
+
+std::vector<int> removeDuplicates(const std::vector<int>& nums) {
+    std::set<int> uniqueSet(nums.begin(), nums.end());
+    
+    std::vector<int> result(uniqueSet.begin(), uniqueSet.end());
+    
+    return result;
+}
+
+
+
+
+int main() {
+    std::vector<int> nums = {4, 2, 5, 2, 3, 4, 1};
+    auto result = removeDuplicates(nums);
+    
+    for (int n : result) {
+        std::cout << n << " ";
+    }
+    std::cout << std::endl;
+    
+    return 0;
+}
