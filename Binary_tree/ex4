@@ -1,0 +1,53 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+void preorder(TreeNode* root, vector<int>& res) {
+    if (!root) return;
+    res.push_back(root->val);
+    preorder(root->left, res);
+    preorder(root->right, res);
+}
+
+void inorder(TreeNode* root, vector<int>& res) {
+    if (!root) return;
+    inorder(root->left, res);
+    res.push_back(root->val);
+    inorder(root->right, res);
+}
+
+void postorder(TreeNode* root, vector<int>& res) {
+    if (!root) return;
+    postorder(root->left, res);
+    postorder(root->right, res);
+    res.push_back(root->val);
+}
+
+int main() {
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+    root->left->right = new TreeNode(5);
+
+    vector<int> pre, in, post;
+    preorder(root, pre);
+    inorder(root, in);
+    postorder(root, post);
+
+    for(int v : pre) cout << v << " ";
+    cout << endl;
+    for(int v : in) cout << v << " ";
+    cout << endl;
+    for(int v : post) cout << v << " ";
+    cout << endl;
+
+    return 0;
+}
