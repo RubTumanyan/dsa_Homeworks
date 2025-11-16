@@ -1,0 +1,34 @@
+#include <iostream>
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+void mirrorTree(TreeNode* root) {
+    if (!root) return;
+    std::swap(root->left, root->right);
+    mirrorTree(root->left);
+    mirrorTree(root->right);
+}
+
+void printInOrder(TreeNode* root) {
+    if (!root) return;
+    printInOrder(root->left);
+    std::cout << root->val << " ";
+    printInOrder(root->right);
+}
+
+int main() {
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+
+    mirrorTree(root);
+
+    printInOrder(root); // Output will reflect mirrored tree
+    return 0;
+}
