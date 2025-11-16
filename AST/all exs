@@ -1,0 +1,153 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <stdexcept>
+#include <cctype>
+#include <memory>
+
+struct Node {
+    virtual double evaluate(const std::vector<std::pair<std::string, double>>& context) const = 0;
+    virtual ~Node() = default;
+};
+
+struct NumberNode : Node {
+    double value;
+    NumberNode(double v) : value(v) {}
+    double evaluate(const std::vector<std::pair<std::string, double>>&) const override {
+        return value;
+    }
+};
+
+struct VariableNode : Node {
+    std::string name;
+    VariableNode(const std::string& n) : name(n) {}
+    double evaluate(const std::vector<std::pair<std::string, double>>& context) const override {
+        for (auto& [var, val] : context)
+            if (var == name) return val;
+        throw std::runtime_error("Variable " + name + " not found");
+    }
+};
+
+struct OperationNode : Node {
+    std::string op;
+    std::vector<Node*> children;
+    OperationNode(const std::string& o) : op(o) {}
+    ~OperationNode() { for (auto c : children) delete c; }
+
+    double evaluate(const std::vector<std::pair<std::string, double>>& context) const override {
+        if (op == "add") {
+            if (children.size() != 2) throw std::runtime_error("add expects 2 args");
+            return children[0]->evaluate(context) + children[1]->evaluate(context);
+        }
+        else if (op == "subtract") {
+            if (children.size() != 2) throw std::runtime_error("subtract expects 2 args");
+            return children[0]->evaluate(context) - children[1]->evaluate(context);
+        }
+        else if (op == "multiply") {
+            if (children.size() != 2) throw std::runtime_error("multiply expects 2 args");
+            return children[0]->evaluate(context) * children[1]->evaluate(context);
+        }
+        else if (op == "divide") {
+            if (children.size() != 2) throw std::runtime_error("divide expects 2 args");
+            double denom = children[1]->evaluate(context);
+            if (denom == 0) throw std::runtime_error("Division by zero");
+            return children[0]->evaluate(context) / denom;
+        }
+        else if (op == "negate") {
+            if (children.size() != 1) throw std::runtime_error("negate expects 1 arg");
+            return -children[0]->evaluate(context);
+        }
+        else if (op == "max") {
+            if (children.empty()) throw std::runtime_error("max expects at least 1 arg");
+            double m = children[0]->evaluate(context);
+            for (size_t i = 1; i < children.size(); ++i)
+                m = std::max(m, children[i]->evaluate(context));
+            return m;
+        }
+        else if (op == "min") {
+            if (children.empty()) throw std::runtime_error("min expects at least 1 arg");
+            double m = children[0]->evaluate(context);
+            for (size_t i = 1; i < children.size(); ++i)
+                m = std::min(m, children[i]->evaluate(context));
+            return m;
+        }
+        else throw std::runtime_error("Unknown operation: " + op);
+    }
+};
+
+void skipSpaces(const std::string& s, size_t& pos) {
+    while (pos < s.size() && std::isspace(s[pos])) ++pos;
+}
+
+std::string parseIdentifier(const std::string& s, size_t& pos) {
+    size_t start = pos;
+    while (pos < s.size() && (std::isalpha(s[pos]) || std::isdigit(s[pos]) || s[pos]=='_')) ++pos;
+    if (start == pos) throw std::invalid_argument("Expected identifier at position " + std::to_string(pos));
+    return s.substr(start, pos-start);
+}
+
+double parseNumber(const std::string& s, size_t& pos) {
+    size_t start = pos;
+    while (pos < s.size() && (std::isdigit(s[pos]) || s[pos]=='.')) ++pos;
+    if (start == pos) throw std::invalid_argument("Expected number at position " + std::to_string(pos));
+    return std::stod(s.substr(start, pos-start));
+}
+
+Node* parseExpression(const std::string& s, size_t& pos);
+
+Node* parseArgument(const std::string& s, size_t& pos) {
+    skipSpaces(s,pos);
+    if (pos >= s.size()) throw std::invalid_argument("Unexpected end of input");
+    if (std::isdigit(s[pos]) || s[pos]=='.') {
+        return new NumberNode(parseNumber(s,pos));
+    } else if (std::isalpha(s[pos])) {
+        std::string id = parseIdentifier(s,pos);
+        skipSpaces(s,pos);
+        if (pos < s.size() && s[pos] == '(') {
+            ++pos; // skip '('
+            OperationNode* opNode = new OperationNode(id);
+            skipSpaces(s,pos);
+            if (pos < s.size() && s[pos]==')') { ++pos; return opNode; }
+            while (true) {
+                opNode->children.push_back(parseExpression(s,pos));
+                skipSpaces(s,pos);
+                if (pos < s.size() && s[pos]==',') { ++pos; continue; }
+                else if (pos < s.size() && s[pos]==')') { ++pos; break; }
+                else throw std::invalid_argument("Expected ',' or ')' at position " + std::to_string(pos));
+            }
+            return opNode;
+        } else {
+            return new VariableNode(id);
+        }
+    } else throw std::invalid_argument("Unexpected character at position " + std::to_string(pos));
+}
+
+Node* parseExpression(const std::string& s, size_t& pos) {
+    return parseArgument(s,pos);
+}
+
+Node* parse(const std::string& s) {
+    size_t pos = 0;
+    Node* root = parseExpression(s,pos);
+    skipSpaces(s,pos);
+    if (pos != s.size()) throw std::invalid_argument("Unexpected input after position " + std::to_string(pos));
+    return root;
+}
+
+void clear(Node* root) { delete root; }
+
+int main() {
+    std::vector<std::pair<std::string,double>> context = { {"x",2.5}, {"y",12.0} };
+    std::string expression = "multiply(add(x, 5.5), negate(max(y, 10, 4)))";
+
+    try {
+        Node* ast = parse(expression);
+        double result = ast->evaluate(context);
+        std::cout << "Result: " << result << std::endl;
+        clear(ast);
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}
