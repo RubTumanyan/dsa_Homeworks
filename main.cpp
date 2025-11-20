@@ -334,7 +334,7 @@ int main() {
 
     // std::map<std::string, int> freq = {{"apple", 5}, {"banana", 2}, {"cherry", 8}, {"date", 1}};
     // int removed = removeInfrequent(freq, 3);
-    // std::cout << removed << '\n';  // 2
+    // std::cout << removed << '\n';  // 2:
     // // freq теперь содержит: {{"apple", 5}, {"cherry", 8}}
 
 
