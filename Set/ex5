@@ -1,0 +1,36 @@
+#include <iostream>
+#include <set>
+#include <cmath> 
+
+int findClosest(const std::set<int>& s, int target) {
+    if (s.empty()) return -1;
+
+    auto it = s.lower_bound(target);
+
+    if (it == s.begin()) {
+        return *it;
+    }
+    if (it == s.end()) {
+        return *std::prev(it);
+    }
+
+    int upper = *it;
+    int lower = *std::prev(it);
+
+    if (std::abs(target - lower) <= std::abs(target - upper)) {
+        return lower; 
+    } else {
+        return upper;
+    }
+}
+
+int main() {
+    std::set<int> s = {1, 3, 5, 7, 9};
+    
+    std::cout << findClosest(s, 6) << std::endl;  // 5
+    std::cout << findClosest(s, 8) << std::endl;  // 7
+    std::cout << findClosest(s, 10) << std::endl; // 9
+    std::cout << findClosest(s, 0) << std::endl;  // 1
+
+    return 0;
+}

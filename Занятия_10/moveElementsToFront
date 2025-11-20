@@ -1,0 +1,44 @@
+#include <iostream>
+#include <forward_list>
+
+void moveElementsToFront(std::forward_list<int>& list , int value ) {
+    
+    std::forward_list<int> goal;
+    std::forward_list<int> others;
+    
+    auto curr = list.begin();
+    auto before_curr = list.before_begin();
+    
+    auto it1 = goal.before_begin();
+    auto it2 = others.before_begin();
+    
+    while(curr != list.end()) {
+        if (*curr == value) {
+            it1 = goal.insert_after(it1,value);
+        }else{
+            it2 = others.insert_after(it2,*curr);
+        }
+        curr++;
+    } 
+    
+    it1 = goal.insert_after(it1, others.begin() , others.end());
+ 
+    list = std::move(goal);
+    
+}
+void printList(std::forward_list<int>& list) {
+    
+    for (int elem : list) {
+        std::cout << elem << " ";
+    }
+    
+}
+
+int main() {
+   
+   std::forward_list<int> fl1 = {1, 3, 5, 5, 6, 6, 3, 6, 3, 5, 2};
+   moveElementsToFront(fl1,3);
+   
+   printList(fl1);
+    return 0;
+}

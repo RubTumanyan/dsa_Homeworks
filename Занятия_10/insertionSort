@@ -1,0 +1,39 @@
+#include <iostream>
+#include <forward_list>
+using namespace std;
+
+void printList(const forward_list<int>& fl) {
+    for (int x : fl) cout << x << " ";
+    cout << endl;
+}
+
+void insertionSort(forward_list<int>& fl) {
+    if (fl.empty() || fl.begin() == fl.end()) return;
+
+    forward_list<int> sorted;
+
+    for (int value : fl) {
+        auto it = sorted.before_begin();
+        auto curr = sorted.begin();
+
+        while (curr != sorted.end() && *curr < value) {
+            ++it;
+            ++curr;
+        }
+
+
+        sorted.insert_after(it, value);
+
+        printList(sorted);
+    }
+    fl = sorted;
+}
+
+int main() {
+    forward_list<int> fl = {5, 2, 8, 1, 9};
+    insertionSort(fl);
+
+    cout << "Final sorted list: ";
+    printList(fl);
+    return 0;
+}

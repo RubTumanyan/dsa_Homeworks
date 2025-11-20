@@ -1,0 +1,29 @@
+#include <iostream>
+#include <forward_list>
+
+void insertAfterPosition(std::forward_list<int>& list , int index, int value) {
+    
+    auto it = list.begin();
+    
+    for (int i = 0 ; i < index && it != list.end() ; i++) {
+        it++;
+    }
+    
+    list.insert_after(it,value);
+}
+  void print_lst(std::forward_list<int>& lst) {
+      for (int elem : lst) {
+          std::cout << elem << " ";
+      }
+  }
+  
+  
+int main()
+{
+    std::forward_list<int> lst { 1, 2 , 3 ,5 , 6, 8 , 4, 5, 4};
+    insertAfterPosition(lst , 3 , 15);
+    print_lst(lst);
+    
+    
+    return 0;
+}

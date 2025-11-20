@@ -1,0 +1,25 @@
+#include <iostream>
+#include <set>
+#include <cmath> 
+
+int rangeCount(const std::set<int>& s, int low , int high) {
+    if (s.empty()) return -1;
+
+    auto it = s.lower_bound(low);
+    auto it1 = s.upper_bound(high);
+
+    
+    std::set<int> nums;
+    for (auto i = it ; i != it1 ; i++) {
+        nums.insert(*i);
+    }
+    return nums.size();
+ }
+
+int main() {
+    
+    std::set<int> s = {1, 3, 5, 7, 9, 11, 13, 15};
+    std::cout << rangeCount(s, 5, 11) << '\n';  // 4 (элементы: 5, 7, 9, 11)
+
+    return 0;
+}

@@ -1,0 +1,17 @@
+#include <iostream>
+#include <vector>
+void workWithEmptyVector() {
+    std::vector<int> result;
+    for (int i = 1 ; i <= 9 ; i++) {
+        result.push_back(i);
+        std::cout << result.size() << " ";
+        std::cout << result.capacity() << "\n";
+    
+    }
+}
+int main()
+{
+  workWithEmptyVector(); 
+   
+    return 0;
+}

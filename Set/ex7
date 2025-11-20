@@ -1,0 +1,42 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+
+std::vector<int> symmetricDifference(const std::vector<int>& nums, const std::vector<int>& nums1) {
+    std::set<int> set1(nums.begin(), nums.end());
+    std::set<int> set2(nums1.begin(), nums1.end());
+    
+    std::vector<int> result;
+    
+    // Элементы, которые есть в set1, но нет в set2
+    for (int x : set1) {
+        if (!set2.count(x)) {
+            result.push_back(x);
+        }
+    }
+    
+    // Элементы, которые есть в set2, но нет в set1
+    for (int x : set2) {
+        if (!set1.count(x)) {
+            result.push_back(x);
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    std::vector<int> a = {1, 2, 3, 4};
+    std::vector<int> b = {3, 4, 5, 6};
+
+    auto diff = symmetricDifference(a, b);
+
+    for (int x : diff) {
+        std::cout << x << " ";
+    }
+    std::cout << std::endl;
+
+    // Вывод: 1 2 5 6
+    return 0;
+}

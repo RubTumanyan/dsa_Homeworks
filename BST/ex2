@@ -1,0 +1,29 @@
+#include <iostream>
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+bool search(TreeNode* root, int value) {
+    if (!root) return false;
+    if (value == root->val) return true;
+    else if (value < root->val) return search(root->left, value);
+    else return search(root->right, value);
+}
+
+int main() {
+    TreeNode* root = new TreeNode(5);
+    root->left = new TreeNode(3);
+    root->right = new TreeNode(7);
+
+    bool found = search(root, 3);
+    bool notFound = search(root, 10);
+
+    std::cout << "Found 3? " << (found ? "true" : "false") << std::endl;
+    std::cout << "Found 10? " << (notFound ? "true" : "false") << std::endl;
+
+    return 0;
+}

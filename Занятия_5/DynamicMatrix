@@ -1,0 +1,47 @@
+#include <iostream>
+#include <vector>
+
+class DynamicMatrix{
+private:
+    std::vector<std::vector<int>> data;
+public:
+    DynamicMatrix(int row , int col) {
+        data.resize(row,std::vector<int> (col,0));
+    } 
+    int getElement(int row, int col) {
+        return data[row][col];
+    }
+    void setElement(int row, int col , int value) {
+        data[row][col] = value;
+    }
+    void addRow() {
+        int sizeCol = data[0].size();
+        std::vector<int> vector_with_addRow(sizeCol , 0);
+        data.push_back(vector_with_addRow);
+    }
+    void addColumn() {
+        for (auto& row : data) {
+            row.push_back(0);
+        }
+    }
+    void print() {
+        for (auto& row : data) {
+            for (int& el : row) {
+                std::cout << el << " ";
+            }
+            std::cout << std::endl;
+        }
+    } 
+};
+
+
+
+
+
+
+
+
+
+
+
+

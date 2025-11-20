@@ -1,0 +1,26 @@
+#include <iostream>
+#include <vector>
+
+template <typename T>
+void resizeVector(std::vector<T> vec , int size , int um) {
+    for (int& x : vec) {
+        std::cout << x << " ";
+    }
+    int size1 = vec.size();
+    vec.resize(size);
+    for (int i = size1 ; i <= vec.size() - 1 ; i++) {
+        vec[i] = um;
+    }
+    std::cout << "\n";
+    for (int& x : vec) {
+        std::cout << x << " " ;
+    }
+}
+
+int main()
+{   std::vector<int> vec = {4,5,2,6,3,6,3,5};
+    resizeVector(vec,100,18); 
+    
+
+    return 0;
+}

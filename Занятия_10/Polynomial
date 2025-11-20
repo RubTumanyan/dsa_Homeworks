@@ -1,0 +1,91 @@
+#include <iostream>
+#include <forward_list>
+#include <utility>
+#include <cmath>
+
+
+class Polynomial{
+private:
+    std::forward_list<std::pair<int,double>> terms;
+public:
+    Polynomial() = default;
+    
+    void addTerm(int degree,double coefficient) {
+        if (coefficient == 0) return;
+        
+        auto prev = terms.before_begin();
+        auto curr = terms.begin();
+        
+        while (curr != terms.end() && curr -> first > degree) {
+            ++prev;
+            ++curr;
+        }
+        if ( curr != terms.end() && curr -> first == degree) {
+            curr->second += coefficient;
+            if (curr->second == 0) {
+                terms.erase_after(prev);
+            }
+        }
+        else{
+            terms.insert_after(prev , {degree , coefficient});
+        }
+    }
+    
+    double evaluate(double x) {
+        double result = 0.0;
+        for (auto &term : terms) {
+            result += term.second * std::pow(x,term.first);
+        }
+        return result;
+    }
+    
+    Polynomial derivative() {
+        Polynomial deriv;
+        for (auto &term : terms) {
+            if (term.first > 0) {
+                deriv.addTerm(term.first -1 , term.first * term.second);
+            }
+        }
+        return deriv;
+    }
+    void print() {
+        if (terms.empty()) {
+            std::cout << "0\n";
+        }
+        bool first = true;
+        for(auto &term : terms) {
+            int degree = term.first;
+            double coef = term.second;
+            if(!first) {
+                if (coef < 0){
+                std::cout << "-";
+                }else{
+                std::cout << "+";
+                }
+            }else{
+            if(coef < 0 ) std::cout <<"-";
+                first = false;
+            }
+                
+            double absCoef = std::abs(coef);
+            if (degree == 0) {
+                std::cout << absCoef;
+            }
+            else if (degree == 1) {
+                std::cout << absCoef << "x";
+            }
+            else{
+                std::cout << absCoef << "x^" << degree;
+            }
+        }
+    }
+};
+    int main(){
+        Polynomial p;
+        p.addTerm(2, 3.0);  // 3x²
+        p.addTerm(0, 5.0);  // +5
+        p.addTerm(1, -2.0); // -2x
+        p.print(); // "3x² - 2x + 5"
+        double result = p.evaluate(2.0); // 3*4 - 2*2 + 5 = 13
+        Polynomial dp = p.derivative();
+    }

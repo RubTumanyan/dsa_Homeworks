@@ -1,0 +1,26 @@
+#include <iostream>
+#include <vector>
+#include <set>
+
+std::vector<int> findIntersection(const std::vector<int>& nums1 , const std::vector<int>& nums2){
+    std::set<int> unique(nums1.begin() , nums1.end());
+    std::vector<int> result;   
+    for (int x : nums2) {
+        if(unique.count(x)){
+            result.push_back(x);
+        }
+    }
+    return result;
+}
+    int main()
+{
+    std::vector<int> arr1 = {1, 2, 3, 4, 5};
+    std::vector<int> arr2 = {3, 4, 5, 6, 7};
+    auto result = findIntersection(arr1, arr2);
+    for (int x : result) {
+        std::cout << x << " ";
+    }
+    // result: {3, 4, 5} 
+
+    return 0;
+}

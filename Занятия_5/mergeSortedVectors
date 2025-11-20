@@ -1,0 +1,42 @@
+#include <iostream>
+#include <vector>
+
+std::vector<int> mergeSortedVectors(std::vector<int>& vec , std::vector<int>& vec1) {
+ 
+    std::vector<int> result;
+    result.reserve(vec.size() + vec1.size());
+    
+    size_t i = 0 , j = 0;
+    
+    while (i < vec.size() && j < vec1.size()) {
+        if (vec[i] < vec1[j]) {
+            result.push_back(vec[i]);
+            i++;
+        }
+        else {
+            result.push_back(vec1[j]);
+            j++;
+        }
+    }
+    while (i < vec.size()) {
+        result.push_back(vec[i]);
+        i++;
+    }
+     while (j < vec.size()) {
+        result.push_back(vec1[j]);
+        j++;
+    }
+    return result;
+}
+int main()
+{
+    std::vector<int> vec = {4 , 5 , 8, 16};
+    std::vector<int> vec1 = { 3, 5 ,5 , 6 , 12};
+    std::vector<int> result = mergeSortedVectors(vec , vec1);
+    
+    for (int& i : result) {
+        std::cout << i << " ";
+    }
+
+    return 0;
+}

@@ -1,0 +1,20 @@
+#include <iostream>
+#include <forward_list>
+
+void createAndFillList(int n) {
+    std::forward_list<int> numbers{};
+    
+    for (int i = 1 ; i <= n ; i++) {
+        numbers.push_front(i);
+    }
+    
+    for (int element : numbers) {
+        std::cout << element << " ";
+    }
+}
+int main()
+{
+    createAndFillList(5);
+
+    return 0;
+}
